@@ -1,0 +1,63 @@
+title: |-
+  Connect to OpenVPN Server via '*.ovpn' config file
+summary: |
+  Establish a VPN connection with the specified OpenVPN server via '*.ovpn' config file.
+description: |
+  Before using this step, you need to build an OpenVPN server in advance.
+  This article is helpful for how to construct OpenVPN server.
+  https://www.digitalocean.com/community/tutorials/how-to-set-up-an-openvpn-server-on-ubuntu-18-04
+
+
+  After building the VPN server, you need to register your generated '*.ovpn' file in base64 format into Bitrise Secret.
+  Also, if your authentication method provides user's login/password, you have to add this data into Bitrise Secret.
+
+  You can easily retrieve the contents of Base64 with the following command.
+  `$ base64 -i {path-to-*.ovpn} -o {path-to-base64-encoded-file}`
+website: https://github.com/itShouldWork/bitrise-step-openVPN-via-config
+source_code_url: https://github.com/itShouldWork/bitrise-step-openVPN-via-config
+support_url: https://github.com/itShouldWork/bitrise-step-openVPN-via-config
+host_os_tags:
+  - osx-10.10
+
+type_tags:
+  - access-control
+
+is_requires_admin_user: true
+is_always_run: false
+is_skippable: false
+run_if: ""
+
+deps:
+  brew:
+  - name: openvpn
+  apt_get:
+  - name: openvpn
+  - name: net-tools
+
+
+toolkit:
+  bash:
+    entry_file: step.sh
+
+inputs:
+  - config: "$VPN_CONFIG_BASE64"
+    opts:
+      title: "Base64 encoded config file"
+      summary: "Your '*.ovpn' config file encoded to base64"
+      is_expand: true
+      is_required: true
+      is_sensitive: true
+  - login:
+    opts:
+      title: "Login"
+      summary: "Your user's login for authentiation if needed."
+      is_expand: true
+      is_required: false
+      is_sensitive: true
+  - password:
+    opts:
+      title: "Password"
+      summary: "Your user's password for authentiation if needed."
+      is_expand: true
+      is_required: false
+      is_sensitive: true
